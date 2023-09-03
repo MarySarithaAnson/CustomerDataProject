@@ -1,0 +1,123 @@
+﻿@model CustomerDataProject.Models.CustomerInfo;
+@{
+    ViewData["Title"] = "Home Page";
+}
+<head>
+    @* <title>Signature Pad</title> *@
+    <style>
+        #signature-pad {
+            border: 2px solid #000;
+        }
+    </style>
+</head>
+<div class="text-center">
+    <h1 class="display-4">Customer Details Form</h1>
+
+    @using(Html.BeginForm("Index","Home",FormMethod.Post))
+    {
+        <table>
+            <tr>
+                <td>Name</td>
+                <td>@Html.TextBoxFor(m => m.Name)</td>
+            </tr>
+
+            <tr>
+                <td>Email</td>
+                <td>@Html.TextBoxFor(m => m.Email)</td>
+            </tr>
+            <tr>
+                <td>Phone Number</td>
+                <td>@Html.TextBoxFor(m => m.Phone)</td>
+            </tr>
+            <tr>
+                @Html.HiddenFor(m => m.ImageData, new { id = "hidden-field" })
+               @*  <td>Signature</td>
+                <td>@Html.TextBoxFor(m => m.Signature)</td> *@
+               @*  <input type="hidden" name="SignatureImageData" id="signature-data" />
+                @Html.TextBoxFor(m => m., new { style = "display: none;" }) *@
+            </tr>
+            <tr><td> 
+                    
+                        <h>Signature </h>
+                        <p>Click and drag to sign below:</p>
+
+                        <canvas id="signature-pad" width="400" height="200"></canvas>
+
+                        <button id="clear-button" type="reset">Clear</button>
+                       <td colspan="3"> <button id="save-button" style="color:blue">Save</button></td>
+
+
+                        <script>                    
+                            // Get references to the canvas and buttons
+                            var canvas = document.getElementById('signature-pad');
+                            var clearButton = document.getElementById('clear-button');
+                            var saveButton = document.getElementById('save-button');
+
+                            // Get the 2d drawing context of the canvas
+                            var context = canvas.getContext('2d');
+
+                            // Initialize variables to track the signature state
+                            var isDrawing = false;
+                            var lastX = 0;
+                            var lastY = 0;
+
+                            // Event listeners for mouse/touch interactions
+                            canvas.addEventListener('mousedown', (e) => {
+                                isDrawing = true;
+                                [lastX, lastY] = [e.offsetX, e.offsetY];
+                            });
+
+                            canvas.addEventListener('mousemove', (e) => {
+                                if (!isDrawing) return;
+                                context.beginPath();
+                                context.moveTo(lastX, lastY);
+                                context.lineTo(e.offsetX, e.offsetY);
+                                context.strokeStyle = '#000';
+                                context.lineWidth = 2;
+                                context.stroke();
+                                [lastX, lastY] = [e.offsetX, e.offsetY];
+                            });
+
+                            canvas.addEventListener('mouseup', () => {
+                                isDrawing = false;
+                            });
+
+                            canvas.addEventListener('mouseleave', () => {
+                                isDrawing = false;
+                            });
+
+                            // Clear the canvas when the "Clear" button is clicked
+                            clearButton.addEventListener('click', () => {
+                                context.clearRect(0, 0, canvas.width, canvas.height);
+                            });
+
+                            // Save the signature as an image when the "Save" button is clicked
+                            saveButton.addEventListener('click', () => {
+                                var signatureImage = canvas.toDataURL(); // This will contain the signature as a data URL
+                                
+                            $("#hidden-field").val(signatureImage);
+                            });
+                        </script>
+                    
+            </td></tr>
+
+            @* <tr> <td colspan="2"><input type="submit" value="Submit" /></td> </tr> *@
+
+        </table>
+        @if (TempData["SuccessMessage"] != null)
+        {
+            @* <div class="alert alert-success">
+                @TempData["SuccessMessage"]
+            </div> *@
+            <script>
+                alert("Form submitted successfully!");
+            </script>
+        }
+     
+    }
+
+
+
+
+
+</div>
